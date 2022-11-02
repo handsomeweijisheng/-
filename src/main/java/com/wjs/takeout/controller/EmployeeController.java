@@ -97,4 +97,13 @@ public class EmployeeController {
         employeeService.page(page1,queryWrapper);
         return Result.success(page1);
     }
+    @PutMapping
+    public Result<String> updateEmployee(@RequestBody Employee employee,HttpServletRequest request){
+        //log.info("{}",employee);
+        employee.setUpdateTime(LocalDateTime.now());
+        Employee employee1 = (Employee) request.getSession().getAttribute("employee");
+        employee.setUpdateUser(employee1.getId());
+        employeeService.updateById(employee);
+        return Result.success("1");
+    }
 }
