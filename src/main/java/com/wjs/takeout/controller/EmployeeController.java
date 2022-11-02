@@ -1,17 +1,15 @@
 package com.wjs.takeout.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.extension.api.R;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.wjs.takeout.common.Result;
 import com.wjs.takeout.entity.Employee;
 import com.wjs.takeout.service.EmployeeService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.DigestUtils;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
@@ -84,5 +82,19 @@ public class EmployeeController {
         employeeService.save(employee);
         log.info("员工添加成功");
         return Result.success("员工添加成功");
+    }
+    @GetMapping("/page")
+    public Result<Page<Employee>> splitPage(int page,int pageSize,String name){
+        //log.info("page:{},pageSize:{},name:{}",page,pageSize,name);
+        //1.构造分页构造器
+        Page<Employee> page1 = new Page<>(page, pageSize);
+        //2.构造条件构造器
+        LambdaQueryWrapper<Employee> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.likeLeft(StringUtils.isNotEmpty(name),Employee::getName,name);
+        //添加排序条件
+        queryWrapper.orderByDesc(Employee::getUpdateTime);
+        //执行查询
+        employeeService.page(page1,queryWrapper);
+        return Result.success(page1);
     }
 }
