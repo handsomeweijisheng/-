@@ -69,6 +69,13 @@ public class EmployeeController {
         request.getSession().removeAttribute("employee");
         return Result.success("用户退出登录成功");
     }
+
+    /**
+     * 员工新增
+     * @param employee
+     * @param request
+     * @return
+     */
     @PostMapping
     public Result<String> addEmployee(@RequestBody Employee employee,HttpServletRequest request){
         log.info("进入员工信息添加界面,添加员工");
@@ -97,6 +104,13 @@ public class EmployeeController {
         employeeService.page(page1,queryWrapper);
         return Result.success(page1);
     }
+
+    /**
+     *  设置员工状态值(账号启用或禁用和修改都在这里)
+     * @param employee 员工
+     * @param request 请求
+     * @return 返回值
+     */
     @PutMapping
     public Result<String> updateEmployee(@RequestBody Employee employee,HttpServletRequest request){
         //log.info("{}",employee);
@@ -105,5 +119,16 @@ public class EmployeeController {
         employee.setUpdateUser(employee1.getId());
         employeeService.updateById(employee);
         return Result.success("1");
+    }
+
+    /**
+     *对员工进行修改之通过id查询出员工的信息
+     * @return 返回值
+     */
+    @RequestMapping(value = "/{id}",method = RequestMethod.GET)
+    public Result<Employee> editEmployee(@PathVariable(name="id") Long id){
+        //log.info("{}",id);
+        Employee employee = employeeService.getById(id);
+        return Result.success(employee);
     }
 }
