@@ -80,11 +80,11 @@ public class EmployeeController {
     public Result<String> addEmployee(@RequestBody Employee employee,HttpServletRequest request){
         log.info("进入员工信息添加界面,添加员工");
         employee.setPassword(DigestUtils.md5DigestAsHex("123456".getBytes()));
-        employee.setCreateTime(LocalDateTime.now());
-        employee.setUpdateTime(LocalDateTime.now());
+        //employee.setCreateTime(LocalDateTime.now());
+        //employee.setUpdateTime(LocalDateTime.now());
         Employee employee1 = (Employee) request.getSession().getAttribute("employee");
-        employee.setCreateUser(employee1.getId());
-        employee.setUpdateUser(employee1.getId());
+        //employee.setCreateUser(employee1.getId());
+        //employee.setUpdateUser(employee1.getId());
         employee.setStatus(1);
         employeeService.save(employee);
         log.info("员工添加成功");
@@ -114,9 +114,10 @@ public class EmployeeController {
     @PutMapping
     public Result<String> updateEmployee(@RequestBody Employee employee,HttpServletRequest request){
         //log.info("{}",employee);
-        employee.setUpdateTime(LocalDateTime.now());
+        //log.info("修改操作当前线程Id是:{}",Thread.currentThread().getId());
+        //employee.setUpdateTime(LocalDateTime.now());
         Employee employee1 = (Employee) request.getSession().getAttribute("employee");
-        employee.setUpdateUser(employee1.getId());
+        //employee.setUpdateUser(employee1.getId());
         employeeService.updateById(employee);
         return Result.success("1");
     }

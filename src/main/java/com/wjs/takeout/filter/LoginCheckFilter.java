@@ -1,6 +1,7 @@
 package com.wjs.takeout.filter;
 
 import com.alibaba.fastjson.JSON;
+import com.wjs.takeout.common.BaseContext;
 import com.wjs.takeout.common.Result;
 import com.wjs.takeout.entity.Employee;
 import lombok.extern.slf4j.Slf4j;
@@ -49,7 +50,9 @@ public class LoginCheckFilter implements Filter {
     //    4.判断登陆状态,如果已登录,则直接放行
         Employee employee = (Employee) request.getSession().getAttribute("employee");
         if(!StringUtils.isEmpty(employee)){
+            BaseContext.setCurrentId(employee.getId());//通过ThreadLocal设置线程Id
             filterChain.doFilter(request,response);
+            //log.info("过滤器里面当前线程Id是:{}",Thread.currentThread().getId());
         }else {
         //    5.如果未登录通过输出流的方式返回未登录结果
             response.getWriter().write(JSON.toJSONString(Result.error("NOTLOGIN")));
