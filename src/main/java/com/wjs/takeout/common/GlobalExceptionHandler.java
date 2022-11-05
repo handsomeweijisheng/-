@@ -15,8 +15,13 @@ import java.sql.SQLIntegrityConstraintViolationException;
 @ResponseBody
 @ControllerAdvice
 public class GlobalExceptionHandler {
+    /**
+     *  定义异常处理类处理主键重复问题
+     * @param ex 异常
+     * @return 返回值
+     */
     @ExceptionHandler(SQLIntegrityConstraintViolationException.class)
-    public Result<String> exceptionHadler(SQLIntegrityConstraintViolationException ex){
+    public Result<String> exceptionHandler(SQLIntegrityConstraintViolationException ex){
         //log.info(ex.getMessage());
         if(ex.getMessage().contains("Duplicate")){
             String[] s = ex.getMessage().split(" ");
@@ -24,5 +29,15 @@ public class GlobalExceptionHandler {
             return Result.error(value+"已存在");
         }
         return Result.error("unknown error");
+    }
+
+    /**
+     *  定义异常返回值处理删除分类问题
+     * @param exception 异常
+     * @return 返回值
+     */
+    @ExceptionHandler(CustomException.class)
+    public Result<String> exceptionHandler(CustomException exception){
+        return Result.error(exception.getMessage());
     }
 }
