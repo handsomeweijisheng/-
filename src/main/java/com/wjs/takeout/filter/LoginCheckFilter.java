@@ -36,7 +36,9 @@ public class LoginCheckFilter implements Filter {
                 "/employee/login",
                 "employee/logout",
                 "/backend/**",
-                "/front/**"
+                "/front/**",
+                "/common/**",
+                "/backend/page/demo/**"
         };
         for (String url :
                 urls) {
