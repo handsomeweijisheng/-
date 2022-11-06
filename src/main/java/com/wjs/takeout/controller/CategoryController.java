@@ -9,6 +9,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 /**
  * @author wjs
  * @createTime 2022-11-05 22:27
@@ -72,5 +74,19 @@ public class CategoryController {
         //categoryService.removeById(ids);
          categoryService.remove(ids);
         return Result.success("删除成功");
+    }
+
+    /**
+     *
+     * @return 在添加菜品的时候动态获取菜品分类下拉框东西
+     */
+    @GetMapping("/list")
+    public Result<List<Category>> getCategoryList(Category category){
+        LambdaQueryWrapper<Category> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(Category::getType,category.getType());
+        queryWrapper.orderByAsc(Category::getSort);
+        queryWrapper.orderByDesc(Category::getUpdateTime);
+        List<Category> list = categoryService.list(queryWrapper);
+        return Result.success(list);
     }
 }

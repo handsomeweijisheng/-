@@ -1,59 +1,35 @@
 package com.wjs.takeout.entity;
 
-/**
- * @author wjs
- * @createTime 2022-11-05 23:42
- */
-
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
 import lombok.Data;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 /**
- 菜品
+ * @author wjs
+ * @createTime 2022-11-06 22:43
  */
 @Data
-public class Dish implements Serializable {
+public class DishFlavor implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     private Long id;
 
 
-    //菜品名称
+    //菜品id
+    private Long dishId;
+
+
+    //口味名称
     private String name;
 
 
-    //菜品分类id
-    private Long categoryId;
+    //口味数据list
+    private String value;
 
-
-    //菜品价格
-    private BigDecimal price;
-
-
-    //商品码
-    private String code;
-
-
-    //图片
-    private String image;
-
-
-    //描述信息
-    private String description;
-
-
-    //0 停售 1 起售
-    private Integer status;
-
-
-    //顺序
-    private Integer sort;
 
     @TableField(fill = FieldFill.INSERT)
     private LocalDateTime createTime;
