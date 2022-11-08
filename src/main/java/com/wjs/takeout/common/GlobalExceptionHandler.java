@@ -5,6 +5,8 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.sql.SQLIntegrityConstraintViolationException;
 
 /**  定义一个全局异常处理类
@@ -39,5 +41,16 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(CustomException.class)
     public Result<String> exceptionHandler(CustomException exception){
         return Result.error(exception.getMessage());
+    }
+    /**
+     *  定义异常返回值处理删除分类问题
+     * @param exception 异常
+     * @return 返回值 I
+     */
+    @ExceptionHandler(FileNotFoundException.class)
+    public void exceptionHandler(FileNotFoundException exception){
+        //return Result.error(exception.getMessage());
+        //System.out.println(exception.getMessage());
+        log.info("{}",exception.getMessage());
     }
 }

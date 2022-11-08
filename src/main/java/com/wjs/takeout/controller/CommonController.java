@@ -4,6 +4,7 @@ import com.wjs.takeout.common.Result;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.couchbase.CouchbaseProperties;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -81,8 +82,12 @@ public class CommonController {
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
-            fileInputStream.close();
-            servletOutputStream.close();
+            if(!StringUtils.isEmpty(fileInputStream)){
+                fileInputStream.close();
+            }
+            if(!StringUtils.isEmpty(servletOutputStream)){
+                servletOutputStream.close();
+            }
         }
     }
 }
