@@ -130,7 +130,23 @@ public class DishController {
         return Result.success("删除菜品成功");
     }
     /**
-     * 修改菜品
+     * 修改菜品,回显数据
      */
+    @GetMapping("/{id}")
+    public Result<DishDto> findAllDishMsgById(@PathVariable String id){
+        //System.out.println(id);
+        DishDto dishDto=dishService.queryAllDishMsgById(id);
+        return Result.success(dishDto);
+    }
 
+    /**
+     * 修改菜品
+     * @return 返回值
+     */
+    @PutMapping
+    public Result<String> updateDish(@RequestBody DishDto dishDto){
+        //System.out.println("dishDto = " + dishDto);
+        dishService.updateDishAndFlavors(dishDto);
+     return Result.success("修改成功");
+    }
 }
