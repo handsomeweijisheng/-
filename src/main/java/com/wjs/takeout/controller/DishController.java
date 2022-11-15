@@ -126,6 +126,12 @@ public class DishController {
         for (String str :
                 split) {
             //System.out.println(str);
+            LambdaQueryWrapper<Dish> wrapper = new LambdaQueryWrapper<>();
+            wrapper.eq(Dish::getId,str);
+            Dish one = dishService.getOne(wrapper);
+            if(one.getStatus()==0){
+                return Result.error("停售商品不允许删除");
+            }
             //通过ids修改菜品口味表,然后修改菜品表
             LambdaQueryWrapper<DishFlavor> queryWrapper = new LambdaQueryWrapper<>();
             DishFlavor dishFlavor = new DishFlavor();

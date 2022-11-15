@@ -93,7 +93,13 @@ public class SetmealController {
         String[] split = ids.split(",");
         for (String str :
                 split) {
-        //    1.修改套餐里面的状态
+            LambdaQueryWrapper<Setmeal> wrapper = new LambdaQueryWrapper<>();
+            wrapper.eq(Setmeal::getId,str);
+            Setmeal one = setmealService.getOne(wrapper);
+            if(one.getStatus()==0){
+                return Result.error("停售商品不允许删除");
+            }
+            //    1.修改套餐里面的状态
             Setmeal setmeal = new Setmeal();
             setmeal.setIsDeleted(1);
             LambdaQueryWrapper<Setmeal> queryWrapper = new LambdaQueryWrapper<>();
