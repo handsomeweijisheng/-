@@ -59,6 +59,7 @@ public class DishController {
         LambdaQueryWrapper<Dish> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.like(!StringUtils.isEmpty(name),Dish::getName,name);
         queryWrapper.orderByAsc(Dish::getSort);
+        queryWrapper.eq(Dish::getIsDeleted,0);
         queryWrapper.orderByDesc(Dish::getUpdateTime);
         dishService.page(dishPage,queryWrapper);
         //对象拷贝------->new 知识
@@ -87,7 +88,7 @@ public class DishController {
      */
     @PostMapping("/status/0")
     public Result<String> statusOfDishRemove(String ids){
-        System.out.println(ids);
+        //System.out.println(ids);
         String[] split = ids.split(",");
         for (String id :
                 split) {
@@ -100,7 +101,7 @@ public class DishController {
         return Result.success("停售成功");
     }
     /**
-     * 菜品停售
+     * 菜品启售
      */
     @PostMapping("/status/1")
     public Result<String> statusOfDishSell(String ids){
@@ -125,7 +126,20 @@ public class DishController {
         for (String str :
                 split) {
             //System.out.println(str);
-            dishService.removeById(str);
+            //通过ids修改菜品口味表,然后修改菜品表
+            LambdaQueryWrapper<DishFlavor> queryWrapper = new LambdaQueryWrapper<>();
+            DishFlavor dishFlavor = new DishFlavor();
+            dishFlavor.setIsDeleted(1);
+            queryWrapper.eq(DishFlavor::getDishId,str);
+            //queryWrapper.eq(DishFlavor::getIsDeleted,1);
+            dishFlavorService.update(dishFlavor,queryWrapper);
+            LambdaQueryWrapper<Dish> queryWrapper1 = new LambdaQueryWrapper<>();
+            queryWrapper1.eq(Dish::getId,str);
+            Dish dish = new Dish();
+            dish.setIsDeleted(1);
+            //queryWrapper1.eq(Dish::getIsDeleted,1);
+            //dishService.removeById(str);
+            dishService.update(dish,queryWrapper1);
         }
         return Result.success("删除菜品成功");
     }
@@ -148,5 +162,16 @@ public class DishController {
         //System.out.println("dishDto = " + dishDto);
         dishService.updateDishAndFlavors(dishDto);
      return Result.success("修改成功");
+    }
+    /**
+     * 套餐里面的添加菜品
+     */
+    @GetMapping("/list")
+    public Result<List<Dish>> getList(Dish dish){
+        LambdaQueryWrapper<Dish> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(Dish::getCategoryId,dish.getCategoryId());
+        queryWrapper.orderByAsc(Dish::getSort).orderByDesc(Dish::getUpdateTime);
+        queryWrapper.eq(Dish::getStatus,1);
+        return Result.success(dishService.list(queryWrapper));
     }
 }
