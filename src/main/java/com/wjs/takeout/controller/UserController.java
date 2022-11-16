@@ -81,6 +81,6 @@ public class UserController {
     @PostMapping("/loginout")
     public Result<String> logout(HttpServletRequest request){
         request.getSession().removeAttribute("user");
-        return Result.error("退出登陆成功");
+        return Result.success("退出登陆成功");
     }
 }

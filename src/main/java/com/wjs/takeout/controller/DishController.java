@@ -173,11 +173,22 @@ public class DishController {
      * 套餐里面的添加菜品
      */
     @GetMapping("/list")
-    public Result<List<Dish>> getList(Dish dish){
+    public Result<List<DishDto>> getList(Dish dish){
         LambdaQueryWrapper<Dish> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(Dish::getCategoryId,dish.getCategoryId());
         queryWrapper.orderByAsc(Dish::getSort).orderByDesc(Dish::getUpdateTime);
         queryWrapper.eq(Dish::getStatus,1);
-        return Result.success(dishService.list(queryWrapper));
+        List<Dish> dishList = dishService.list(queryWrapper);
+        List<DishDto> dishDtos = dishList.stream().map(dish1 -> {
+            DishDto dishDto = new DishDto();
+            BeanUtils.copyProperties(dish1, dishDto);
+            Long dishId = dish1.getId();
+            LambdaQueryWrapper<DishFlavor> wrapper = new LambdaQueryWrapper<>();
+            wrapper.eq(DishFlavor::getDishId, dishId);
+            List<DishFlavor> dishFlavorList = dishFlavorService.list(wrapper);
+            dishDto.setFlavors(dishFlavorList);
+            return dishDto;
+        }).collect(Collectors.toList());
+        return Result.success(dishDtos);
     }
 }

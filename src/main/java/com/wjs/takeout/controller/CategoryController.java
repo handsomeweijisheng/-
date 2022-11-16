@@ -7,6 +7,7 @@ import com.wjs.takeout.entity.Category;
 import com.wjs.takeout.service.CategoryService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -82,11 +83,17 @@ public class CategoryController {
      */
     @GetMapping("/list")
     public Result<List<Category>> getCategoryList(Category category){
-        LambdaQueryWrapper<Category> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(Category::getType,category.getType());
-        queryWrapper.orderByAsc(Category::getSort);
-        queryWrapper.orderByDesc(Category::getUpdateTime);
-        List<Category> list = categoryService.list(queryWrapper);
+        List<Category> list=null;
+        if(category .getType()==null){
+            list = categoryService.list();
+        }else{
+            LambdaQueryWrapper<Category> queryWrapper = new LambdaQueryWrapper<>();
+            queryWrapper.eq(Category::getType,category.getType());
+            queryWrapper.orderByAsc(Category::getSort);
+            queryWrapper.orderByDesc(Category::getUpdateTime);
+            list = categoryService.list(queryWrapper);
+        }
+
         return Result.success(list);
     }
 }

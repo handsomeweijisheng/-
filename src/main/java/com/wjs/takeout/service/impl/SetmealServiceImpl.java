@@ -11,6 +11,7 @@ import com.wjs.takeout.service.SetmealService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
 
@@ -44,7 +45,9 @@ public class SetmealServiceImpl extends ServiceImpl<SetmealMapper, Setmeal> impl
         //1.从setmeal里面查询出套餐
         Setmeal setmeal = this.getById(id);
         SetmealDto setmealDto=new SetmealDto();
-        BeanUtils.copyProperties(setmeal,setmealDto);
+        if(!StringUtils.isEmpty(setmeal)){
+            BeanUtils.copyProperties(setmeal,setmealDto);
+        }
         //2.从setmeal_dish里面查出来数据根据setmeal_id
         LambdaQueryWrapper<SetmealDish> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(SetmealDish::getSetmealId,id);

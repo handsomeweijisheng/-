@@ -10,6 +10,7 @@ import com.wjs.takeout.entity.Dish;
 import com.wjs.takeout.entity.Setmeal;
 import com.wjs.takeout.entity.SetmealDish;
 import com.wjs.takeout.service.CategoryService;
+import com.wjs.takeout.service.DishService;
 import com.wjs.takeout.service.SetmealDishService;
 import com.wjs.takeout.service.SetmealService;
 import org.springframework.beans.BeanUtils;
@@ -147,5 +148,28 @@ public class SetmealController {
             setmealService.update(setmeal,queryWrapper);
         }
         return Result.success("起售成功");
+    }
+    @GetMapping("/list")
+    public Result<List<SetmealDto>> getSetmealMsg(Setmeal setmeal){
+        LambdaQueryWrapper<Setmeal> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(Setmeal::getStatus,setmeal.getStatus());
+        queryWrapper.eq(Setmeal::getIsDeleted,0);
+        queryWrapper.eq(Setmeal::getCategoryId,setmeal.getCategoryId());
+        List<Setmeal> list = setmealService.list(queryWrapper);
+        List<SetmealDto> list2 = list.stream()
+                .map(setmeal1 -> {
+                    SetmealDto setmealDto = new SetmealDto();
+                    BeanUtils.copyProperties(setmeal1, setmealDto);
+                    Long categoryId = setmeal1.getCategoryId();
+                    Category category = categoryService.getById(categoryId);
+                    setmealDto.setCategoryName(category.getName());
+                    LambdaQueryWrapper<SetmealDish> wrapper = new LambdaQueryWrapper<>();
+                    wrapper.eq(SetmealDish::getSetmealId, setmeal1.getId());
+                    //List<Dish> list1 = dishService.list(wrapper);
+                    List<SetmealDish> list1 = setmealDishService.list(wrapper);
+                    setmealDto.setSetmealDishes(list1);
+                    return setmealDto;
+                }).collect(Collectors.toList());
+        return Result.success(list2);
     }
 }
