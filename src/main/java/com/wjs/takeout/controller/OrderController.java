@@ -70,7 +70,7 @@ public class OrderController {
 
             if (orderId != null) {
 //                        查询订单明细表
-                QueryWrapper<OrderDetail> 
+                QueryWrapper<OrderDetail>
                         queryWrapper = new QueryWrapper<>();
                 queryWrapper.eq("order_id", orderId);
                 List<OrderDetail> orderDetailList = orderDetailService.list(queryWrapper);
